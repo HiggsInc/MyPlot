@@ -1,11 +1,14 @@
 <?php
+declare(strict_types=1);
 namespace MyPlot;
 
 class Plot
 {
-	public $levelName, $X, $Z, $name = "", $owner = "", $helpers = [], $denied = [], $biome = "PLAINS", $id = -1;
+	public $levelName = "", $X = -0, $Z = -0, $name = "", $owner = "", $helpers = [], $denied = [], $biome = "PLAINS", $id = -1;
 
 	/**
+	 * Plot constructor.
+	 *
 	 * @param string $levelName
 	 * @param int $X
 	 * @param int $Z
@@ -30,20 +33,24 @@ class Plot
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function isHelper($username) {
+	public function isHelper(string $username) : bool {
 		return in_array($username, $this->helpers);
 	}
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function addHelper($username) {
-		if (!$this->isHelper($username)) {
+	public function addHelper(string $username) : bool {
+		if(!$this->isHelper($username)) {
 			$this->unDenyPlayer($username);
 			$this->helpers[] = $username;
 			return true;
@@ -53,15 +60,17 @@ class Plot
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function removeHelper($username) {
+	public function removeHelper(string $username) : bool {
 		if(!$this->isHelper($username)) {
 			return false;
 		}
 		$key = array_search($username, $this->helpers);
-		if ($key === false) {
+		if($key === false) {
 			return false;
 		}
 		unset($this->helpers[$key]);
@@ -70,20 +79,24 @@ class Plot
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function isDenied($username) {
+	public function isDenied(string $username) : bool {
 		return in_array($username, $this->denied);
 	}
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function denyPlayer($username) {
-		if (!$this->isDenied($username)) {
+	public function denyPlayer(string $username) : bool {
+		if(!$this->isDenied($username)) {
 			$this->removeHelper($username);
 			$this->denied[] = $username;
 			return true;
@@ -93,22 +106,27 @@ class Plot
 
 	/**
 	 * @api
+	 *
 	 * @param string $username
+	 *
 	 * @return bool
 	 */
-	public function unDenyPlayer($username) {
+	public function unDenyPlayer(string $username) : bool {
 		if(!$this->isDenied($username)) {
 			return false;
 		}
 		$key = array_search($username, $this->denied);
-		if ($key === false) {
+		if($key === false) {
 			return false;
 		}
 		unset($this->denied[$key]);
 		return true;
 	}
 
-	public function __toString() {
+	/**
+	 * @return string
+	 */
+	public function __toString() : string {
 		return "(" . $this->X . ";" . $this->Z . ")";
 	}
 }
