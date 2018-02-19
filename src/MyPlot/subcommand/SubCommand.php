@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace MyPlot\subcommand;
 
 use MyPlot\MyPlot;
@@ -8,16 +9,16 @@ use pocketmine\plugin\Plugin;
 
 abstract class SubCommand implements PluginIdentifiableCommand
 {
-    /** @var MyPlot $plugin */
+	/** @var MyPlot $plugin */
     private $plugin;
-    /** @var string $name */
+	/** @var string $name */
     private $name;
 
     /**
      * @param MyPlot $plugin
      * @param string $name
      */
-    public function __construct(MyPlot $plugin, string $name) {
+	public function __construct(MyPlot $plugin, string $name) {
         $this->plugin = $plugin;
         $this->name = $name;
     }
@@ -25,7 +26,7 @@ abstract class SubCommand implements PluginIdentifiableCommand
     /**
      * @return MyPlot
      */
-    public final function getPlugin() : Plugin {
+	public final function getPlugin() : Plugin {
         return $this->plugin;
     }
 
@@ -36,7 +37,7 @@ abstract class SubCommand implements PluginIdentifiableCommand
      * @param string $onlyPrefix
      * @return string
      */
-    protected function translateString(string $str, array $params = [], string $onlyPrefix = null) {
+	protected function translateString(string $str, array $params = [], string $onlyPrefix = null) : string {
         return $this->plugin->getLanguage()->translateString($str, $params, $onlyPrefix);
     }
 
@@ -44,12 +45,12 @@ abstract class SubCommand implements PluginIdentifiableCommand
      * @param CommandSender $sender
      * @return bool
      */
-    public abstract function canUse(CommandSender $sender);
+	public abstract function canUse(CommandSender $sender) : bool;
 
     /**
      * @return string
      */
-    public final function getUsage() : string {
+	public final function getUsage() : string {
         $usage = $this->getPlugin()->getLanguage()->get($this->name . ".usage");
         return ($usage == $this->name . ".usage") ? "" : $usage;
     }
@@ -57,7 +58,7 @@ abstract class SubCommand implements PluginIdentifiableCommand
     /**
      * @return string
      */
-    public final function getName() : string {
+	public final function getName() : string {
         $name = $this->getPlugin()->getLanguage()->get($this->name . ".name");
         return ($name == $this->name . ".name") ? "" : $name;
     }
@@ -65,7 +66,7 @@ abstract class SubCommand implements PluginIdentifiableCommand
     /**
      * @return string
      */
-    public final function getDescription() : string {
+	public final function getDescription() : string {
         $desc = $this->getPlugin()->getLanguage()->get($this->name . ".desc");
         return ($desc == $this->name . ".desc") ? "" : $desc;
     }
@@ -73,7 +74,7 @@ abstract class SubCommand implements PluginIdentifiableCommand
     /**
      * @return string
      */
-    public final function getAlias() : string {
+	public final function getAlias() : string {
         $alias = $this->getPlugin()->getLanguage()->get($this->name . ".alias");
         return ($alias == $this->name . ".alias") ? "" : $alias;
     }
@@ -81,7 +82,8 @@ abstract class SubCommand implements PluginIdentifiableCommand
 	/**
 	 * @param CommandSender $sender
 	 * @param string[] $args
+	 *
 	 * @return bool
 	 */
-    public abstract function execute(CommandSender $sender, array $args);
+	public abstract function execute(CommandSender $sender, array $args) : bool;
 }

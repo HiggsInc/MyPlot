@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 namespace MyPlot\subcommand;
 
 use pocketmine\command\CommandSender;
@@ -9,38 +10,40 @@ class RemoveHelperSubCommand extends SubCommand
 {
 	/**
 	 * @param CommandSender $sender
+	 *
 	 * @return bool
 	 */
-	public function canUse(CommandSender $sender) {
+	public function canUse(CommandSender $sender) : bool {
 		return ($sender instanceof Player) and $sender->hasPermission("myplot.command.removehelper");
 	}
 
 	/**
 	 * @param Player $sender
 	 * @param string[] $args
+	 *
 	 * @return bool
 	 */
-	public function execute(CommandSender $sender, array $args) {
+	public function execute(CommandSender $sender, array $args) : bool {
 		if(empty($args)) {
 			return false;
 		}
 		$helper = $args[0];
-		$plot = $this->getPlugin()->getPlotByPosition($sender->getPosition());
-		if ($plot === null) {
+		$plot = $this->getPlugin()->getPlotByPosition($sender);
+		if($plot === null) {
 			$sender->sendMessage(TextFormat::RED . $this->translateString("notinplot"));
 			return true;
 		}
-		if ($plot->owner !== $sender->getName() and !$sender->hasPermission("myplot.admin.removehelper")) {
+		if($plot->owner !== $sender->getName() and !$sender->hasPermission("myplot.admin.removehelper")) {
 			$sender->sendMessage(TextFormat::RED . $this->translateString("notowner"));
 			return true;
 		}
-		if (!$plot->removeHelper($helper)) {
+		if(!$plot->removeHelper($helper)) {
 			$sender->sendMessage(TextFormat::RED . $this->translateString("removehelper.notone", [$helper]));
 			return true;
 		}
-		if ($this->getPlugin()->savePlot($plot)) {
+		if($this->getPlugin()->savePlot($plot)) {
 			$sender->sendMessage($this->translateString("removehelper.success", [$helper]));
-		} else {
+		}else{
 			$sender->sendMessage(TextFormat::RED . $this->translateString("error"));
 		}
 		return true;
